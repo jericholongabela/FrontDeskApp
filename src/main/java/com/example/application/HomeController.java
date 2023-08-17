@@ -14,9 +14,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -27,6 +29,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
+
+    FileChooser fileChooser = new FileChooser();
     String query = null;
     Connection connection = null;
     PreparedStatement preparedStatement = null;
@@ -38,25 +42,67 @@ public class HomeController implements Initializable {
 
     @FXML
     private Label isConnected, lblAreaIDData, lblAreaSizeData, lblStatusData, lblCustomerDetails, lblCustomerID, lblCustomerIDData, lblName, lblNameData, lblMobile, lblMobileData, lblEmail, lblEmailData, lblCustomerNotFound;
-
     @FXML
-    private Button btnCustomer, btnCloseBoxDetails, btnAssign, btnStore, btnSearch, btnRetrieve;
+    private Label lblFile;
+    @FXML
+    private Button btnCustomer, btnCloseBoxDetails, btnAssign, btnStore, btnSearch, btnRetrieve, btnLoadOtherDatabase;
     @FXML
     private TextField inputSmall, inputMedium, inputLarge, inputSearchName;
 
     @Override
     public void initialize (URL location, ResourceBundle resources) {
+        lblFile.setText(databaseAPI.getDefaultDatabase());
+        File initialDir = new File(System.getProperty("user.dir"));
+        fileChooser.setInitialDirectory(initialDir);
         btnStore.setDisable(true);
         btnRetrieve.setVisible(false);
         try (
                 Connection connection = DriverManager.getConnection(databaseAPI.database);
         ){
+            System.out.println("Getting connection from: " + databaseAPI.database);
             isConnected.setText("Connected");
             isConnected.setTextFill(Color.web("#38a63d"));
             updateSummary();
             getAvailableStorages();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void refresh (){
+        lblFile.setText(databaseAPI.getDefaultDatabase());
+        File initialDir = new File(System.getProperty("user.dir"));
+        fileChooser.setInitialDirectory(initialDir);
+        btnStore.setDisable(true);
+        btnRetrieve.setVisible(false);
+        try (
+                Connection connection = DriverManager.getConnection(databaseAPI.database);
+        ){
+            System.out.println("Getting connection from: " + databaseAPI.database);
+            isConnected.setText("Connected");
+            isConnected.setTextFill(Color.web("#38a63d"));
+            updateSummary();
+            getAvailableStorages();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    public void getDatabaseFile (MouseEvent event){
+        try {
+            File file = fileChooser.showOpenDialog(new Stage());
+            System.out.println("Sucessfully set file: " + file);
+            if (file != null){
+                databaseAPI.setDefaultDatabase(file.toString());
+                System.out.println("Updated default database: " + databaseAPI.getDefaultDatabase());
+                databaseAPI.refreshSetDatabase();
+                refresh();
+            } else {
+                System.out.println("Cancelled by the user");
+            }
+        } catch (Exception e){
+            System.out.println("Cancelled by the user");
         }
     }
 
@@ -406,7 +452,7 @@ public class HomeController implements Initializable {
                 break;
             }
         }
-        //System.out.println("Button: " + buttonNumber + " | Available?: " + isActive);
+        System.out.println("Button: " + buttonNumber + " | Available?: " + isActive);
         return !isActive;
     }
 

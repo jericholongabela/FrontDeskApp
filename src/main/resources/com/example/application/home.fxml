@@ -59,6 +59,17 @@
                         <Font name="System Bold" size="36.0" />
                      </font>
                   </TextField>
+                  <Button fx:id="btnLoadOtherDatabase" layoutX="12.0" layoutY="406.0" mnemonicParsing="false" onMouseClicked="#getDatabaseFile" prefHeight="25.0" prefWidth="200.0" text="Load Other Facilities" />
+                  <Label layoutX="111.0" layoutY="6.0" prefHeight="15.0" prefWidth="26.0" text="File:">
+                     <font>
+                        <Font name="System Bold" size="10.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblFile" layoutX="139.0" layoutY="6.0" prefHeight="15.0" prefWidth="70.0" text="file" textOverrun="CENTER_ELLIPSIS">
+                     <font>
+                        <Font name="System Bold" size="10.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="480.0" prefWidth="620.0">

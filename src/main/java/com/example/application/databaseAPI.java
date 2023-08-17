@@ -10,8 +10,11 @@ import java.util.logging.Logger;
 
 public class databaseAPI {
     public static final String JDBC = "org.sqlite.JDBC";
-    public static final String database = "jdbc:sqlite:fdadatabase.db";
+
+    public static String defaultDatabase = "fdadatabase.db";
+    public static String database = "jdbc:sqlite:"+defaultDatabase;
     private static String query = null;
+
 
 
     public static void addCustomer (String name, String address, String mobile_number, String email) throws SQLException, ClassNotFoundException {
@@ -285,4 +288,16 @@ public class databaseAPI {
         System.out.println("Query: UPDATE storage_area SET status = " + status + " WHERE id = " + storage_id);
     }
 
+
+    public static void setDefaultDatabase(String defaultDatabase) {
+        databaseAPI.defaultDatabase = defaultDatabase;
+    }
+
+    public static String getDefaultDatabase() {
+        return defaultDatabase;
+    }
+
+    public static void refreshSetDatabase () {
+        databaseAPI.database = "jdbc:sqlite:"+ getDefaultDatabase();
+    }
 }
